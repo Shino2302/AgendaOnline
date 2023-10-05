@@ -28,7 +28,7 @@ namespace AgendaOnline
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=LoginRegister}/{action=Registro}/{id?}");
 
             app.Run();
         }

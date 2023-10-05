@@ -1,0 +1,38 @@
+﻿@model UsuairosModel;
+@{
+    ViewData["Title"] = "Registro";
+    Layout = null;
+}
+
+<div class="card">
+    <div class="card-header">
+        <h3>Registro de Usuario</h3>
+    </div>
+</div>
+<div class="card-header">
+    <form asp-action="Registro" asp-controller="LoginRegister" method="post">
+        <div class="form-group mb-2">
+            <label for="nombre">Nombres: </label>
+            <input asp-for="Nombre" type="text" name="nombre" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label for="apellido">Apellido:</label>
+            <input asp-for="Apellido" type="text" name="apellido" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label for="userName">Nombre de usuario:</label>
+            <input asp-for="UserName" type="text" name="userName" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label for="email">Email: </label>
+            <input asp-for="Email" type="email" name="email" class="form-control" />
+        </div>
+        <div class="form-group mb-2">
+            <label for="pass">Contraseña: </label>
+            <input asp-for="Pass" type="password" name="pass" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+</div>
+
+

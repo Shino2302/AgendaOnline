@@ -1,0 +1,18 @@
+﻿.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Alinea el contenido del formulario en el centro */
+.col-md-6 {
+    text-align: center;
+}
+
+/* Ajusta el ancho máximo del formulario en pantallas más pequeñas */
+@media (max-width: 768px) {
+    .col-md-6 {
+        max-width: 100%;
+    }
+}

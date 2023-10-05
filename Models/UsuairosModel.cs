@@ -1,7 +1,4 @@
-﻿using Azure.Identity;
-using System.ComponentModel.DataAnnotations;
-
-namespace AgendaOnline.Models
+﻿namespace AgendaOnline.Models
 {
     public class UsuairosModel
     {
