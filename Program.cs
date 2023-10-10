@@ -1,3 +1,7 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
+using System.Net.Sockets;
+
 namespace AgendaOnline
 {
     public class Program
@@ -6,8 +10,23 @@ namespace AgendaOnline
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
-            builder.Services.AddControllersWithViews();
+            // Configuracion para eliminar la cache
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(
+                new ResponseCacheAttribute
+                {
+                    NoStore = true,
+                    Location = ResponseCacheLocation.None,
+                });
+            });
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Principal/Principal";
+                    options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+                });
 
             var app = builder.Build();
 
@@ -23,12 +42,14 @@ namespace AgendaOnline
             app.UseStaticFiles();
 
             app.UseRouting();
+            //agregado para el uso de cookies
+            app.UseAuthentication();
 
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=LoginRegister}/{action=Registro}/{id?}");
+                pattern: "{controller=LoginRegister}/{action=Index}/{id?}");
 
             app.Run();
         }

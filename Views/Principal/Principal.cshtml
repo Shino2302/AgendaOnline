@@ -1,3 +1,30 @@
-﻿@{
+﻿@model List<ListaNotasModel>;
+@{
     ViewData["Title"] = "Tus Notas";
 }
+<h1>Notas de @ViewData["Mensaje"]</h1>
+<div class="contenedorPrincipal">
+    <div>
+
+        @if (Model != null)
+        {
+            foreach (var Item in Model)
+            {
+                <table>
+                    <thead>@Html.DisplayFor(modelItem => Item.Indice)</thead>
+                    <div>
+                        <form asp-action="BorrarNota" asp-controller="Principal" method="post" onsubmit="return confirm('¿Estas seguro que deseas eliminar esta nota?')">
+                            <input type="hidden" name="idNota" value="@Item.IdNotes">
+                            <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                        </form>
+                    </div>
+                    <tbody>
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => Item.Nota)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+        }
+    </div>
+</div>

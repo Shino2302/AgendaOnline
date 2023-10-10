@@ -1,6 +1,8 @@
 ﻿using AgendaOnline.Models;
 using System.Data.SqlClient;
 using System.Data;
+using System.Net.WebSockets;
+using System.Reflection;
 
 namespace AgendaOnline.Datos
 {
@@ -27,7 +29,6 @@ namespace AgendaOnline.Datos
                             UserName = reader["UserName"].ToString(),
                             Email = reader["Email"].ToString(),
                             Pass = reader["Pass"].ToString()
-
                         });
                     }
                 }
@@ -37,26 +38,33 @@ namespace AgendaOnline.Datos
         public static bool CrearUsuario(UsuairosModel model)
         {
             bool resp;
-            try
+            if (CorreoExistente(model.Email) == false)
             {
-                var cn = new Conexion();
-                using (var conexion = new SqlConnection(cn.PasameLaCadena()))
+                try
                 {
-                    conexion.Open();
-                    SqlCommand cmd = new SqlCommand("sp_CreacionUsuario",conexion);
-                    cmd.Parameters.AddWithValue("@nombre", model.Nombre);
-                    cmd.Parameters.AddWithValue("@apellido", model.Apellido);
-                    cmd.Parameters.AddWithValue("@userName", model.UserName);
-                    cmd.Parameters.AddWithValue("@email", model.Email);
-                    cmd.Parameters.AddWithValue("@pass", model.Pass);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                    resp = true;
+                    var cn = new Conexion();
+                    using (var conexion = new SqlConnection(cn.PasameLaCadena()))
+                    {
+                        conexion.Open();
+                        SqlCommand cmd = new SqlCommand("sp_CreacionUsuario", conexion);
+                        cmd.Parameters.AddWithValue("@nombre", model.Nombre);
+                        cmd.Parameters.AddWithValue("@apellido", model.Apellido);
+                        cmd.Parameters.AddWithValue("@userName", model.UserName);
+                        cmd.Parameters.AddWithValue("@email", model.Email);
+                        cmd.Parameters.AddWithValue("@pass", model.Pass);
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        cmd.ExecuteNonQuery();
+                        resp = true;
+                    }
+                }
+                catch
+                {
+                    resp = false;
                 }
             }
-            catch 
-            { 
-                resp = false; 
+            else
+            {
+                resp = false;
             }
             return resp;
         }
@@ -80,26 +88,59 @@ namespace AgendaOnline.Datos
                 }
             }
         }
-        public static bool InicioDeSesion(UsuairosModel model)
+        public static UsuairosModel InicioDeSesion(string userName, string pass)
         {
+            UsuairosModel users = new UsuairosModel();
             var cn = new Conexion();
             using (var conexion = new SqlConnection(cn.PasameLaCadena()))
             {
                 conexion.Open();
-                try
+                SqlCommand cmd = new SqlCommand("sp_InicioAcualizado", conexion);
+                cmd.Parameters.AddWithValue("@nombreUsuario", userName);
+                cmd.Parameters.AddWithValue("@pass", pass);
+                cmd.CommandType = CommandType.StoredProcedure;
+                using (var dr = cmd.ExecuteReader())
                 {
-                    SqlCommand cmd = new SqlCommand("sp_IniciarSesion",conexion);
-                    cmd.Parameters.AddWithValue("nombreUsuario", model.UserName);
-                    cmd.Parameters.AddWithValue("pass", model.Pass);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.ExecuteNonQuery();
-                    return true;
-                }
-                catch
-                {
-                    return false;
+                    while (dr.Read())
+                    {
+                        users.IdUsuario = Convert.ToInt32(dr["IdUsuario"]);
+                        users.Nombre = dr["Nombre"].ToString();
+                        users.Apellido = dr["Apellido"].ToString();
+                        users.Email = dr["Email"].ToString();
+                        users.UserName = dr["UserName"].ToString();
+                        users.Pass = dr["Pass"].ToString();
+                    }
                 }
             }
+            return users;
+        }
+        public static bool CorreoExistente(string correoIngresado)
+        {
+            string correo = "";
+            var cn = new Conexion();
+            using (var conexion = new SqlConnection(cn.PasameLaCadena()))
+            {
+                conexion.Open();
+                SqlCommand cmd = new SqlCommand($"SELECT * FROM dbo.Usuairos WHERE Email == {correoIngresado}");
+                cmd.CommandType = CommandType.Text;
+                cmd.ExecuteNonQuery();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while ( reader.Read()) 
+                    {
+                        correo = reader["Email"].ToString();
+                    }
+                }
+            }
+            if(correo == "")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
         }
     }   
 }
