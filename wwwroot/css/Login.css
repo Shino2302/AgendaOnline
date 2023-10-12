@@ -1,35 +1,21 @@
-﻿body{
-    background: rgb(0, 148, 255, 65%);
+﻿body {
+    margin: 0;
+    font-family: 'Gabarito', sans-serif;
 }
 .container {
-    background:#ffffff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 10vh;
-    min-width: 50hv;
-    border:outset 5px ;
-    border-radius:20px;
-    margin-top: 50px;
-
+    display:inline;
 }
-button{
-    font-size:20px;
-    background-color: rgb(0,148,255,20%);
-    border:solid 1px;
-    border-radius: 10px;
-}
-a{
-    font-size:20px;
-}
-/* Alinea el contenido del formulario en el centro */
-.col-md-6 {
+h1 {
     text-align: center;
 }
-
-/* Ajusta el ancho máximo del formulario en pantallas más pequeñas */
-@media (max-width: 768px) {
-    .col-md-6 {
-        max-width: 100%;
-    }
+form {
+    text-align:center;
+}
+.Opcion2 {
+    display: inline;
+    text-align: center;
+}
+.Opcion2 a:link {
+    text-align: center;
+    color: rgba(255,255,255,0.55);
 }
